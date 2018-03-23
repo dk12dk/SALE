@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	<record id="kite_invoice_form" model="ir.ui.view">
+			<field name="name">kite.invoice</field>
+			<field name="model">kite.invoice</field>
+			<field name="arch" type="xml">
+				<form string="Sale Invoice" version="7.0">
+				<header>
+					<button name="entry_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red"}' readonly="1"/>
+					</header>
+				<group>
+					<group>
+						<field name="name" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="customer_id" on_change="onchange_cus_id(customer_id)" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_address" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_ref" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+					</group>
+					<group>
+						<field name="so_date" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_po" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_po_date" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+					</group>					
+				</group>
+					<notebook>
+						<page string="Select Pending SO">
+							<field name="so_nos" nolabel="1" context="{'tree_view_ref' : 'kite_sale_order.kite_sale_line_tree_invoice'}"/>
+							 <button name="update_so" type='object' string="Proceed" states="draft"/>
+						 </page>	
+						
+						<page string="Line Details">
+							<field name="line_ids" colspan="4" nolabel="1" attrs="{'readonly': [('state','in',['confirm'])]}">
+								<tree string="Order Line" editable="bottom">
+									<field name="product_id" />
+									<field name="unit_price" />
+									<field name="order_qty" />
+									<field name="delivery_date" />
+									<field name="cus_price" />
+								</tree> 
+								</field>
+						</page>
+						<page string="Debit Details">
+						 <button name="update_debit" type='object' string="Load Debit Values"/>
+							<field name="line_ids_debit" colspan="4"  readonly="1" nolabel="1" attrs="{'readonly': [('state','in',['confirm'])]}">
+								<tree string="Debit Details" editable="bottom">
+									<field name="debit_id" />
+									<field name="product_id" />
+									<field name="unit_price" />
+									<field name="order_qty" />
+									<field name="sub_total" />
+								</tree> 
+								</field>
+						</page>
+						<page string="Notes">
+							<field name="remark" nolabel='1' placeholder="Put an internal note..."/>
+						</page>							
+                        <page string="Info">
+							<group>
+							<group>
+								<field name="company_id" readonly='1'/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="user_id"/>
+								</group>
+								<group>
+									<field name="crt_date"/>
+								</group>
+							</group>
+                        </page>                        
+                    </notebook>			
+                    <group class="oe_subtotal_footer oe_right">
+						<label for="amount_total"/>
+					<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" />
+				</group>
+ 	
+					</form>
+			</field> 
+		</record>
+
+<!--
+			search view
+			
+-->
+        <record id="kite_invoice_search" model="ir.ui.view">
+            <field name="name">kite.invoice</field>
+            <field name="model">kite.invoice</field>
+            <field name="arch" type="xml">
+                <search string="Invoice Form">
+                    <field name="name" string="Sale No"/>
+					<group expand="0" string="Group By...">
+						<filter string="Status" context="{'group_by': 'state'}"/>
+					</group>                    
+                </search>
+            </field>
+        </record>	
+
+
+		
+		<record id="kite_invoice_tree" model="ir.ui.view">
+			<field name="name">kite.invoice</field>
+			<field name="model">kite.invoice</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Sale Invoice" >
+					<field name="name"/>
+					<field name="customer_id"/>
+					<field name="so_date"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kite_invoice_action" model="ir.actions.act_window">
+			<field name="name">Sale Invocie</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kite.invoice</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kite_invoice_tree"/>
+		</record>
+		
+        <menuitem id="transaction_sale_invoice_action" parent="kite_debit.transaction_invoice_parent_menu" action="kite_invoice_action" name="Sale Invoice" sequence="2"/>
+		
+		
+</data>
+	</openerp>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	<record id="kite_debit_form" model="ir.ui.view">
+			<field name="name">kite.debit</field>
+			<field name="model">kite.debit</field>
+			<field name="arch" type="xml">
+				<form string="Debit Note" version="7.0">
+				<header>
+					<button name="entry_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,confirm" statusbar_colors='{"draft":"blue","confirm":"red"}' readonly="1"/>
+					</header>
+				<group>
+					<group>
+						<field name="name" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="customer_id" />
+						<field name="product_id" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="product_qty" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+					</group>
+					<group>
+						<field name="entry_date" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="sale_id" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="unit_price" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+					</group>					
+				</group>
+					<notebook>
+						<page string="Notes">
+							<field name="remark" nolabel='1' placeholder="Put an internal note..."/>
+						</page>							
+                        <page string="Info">
+							<group>
+							<group>
+								<field name="company_id" readonly='1'/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="user_id"/>
+								</group>
+								<group>
+									<field name="crt_date"/>
+								</group>
+							</group>
+                        </page>                        
+                    </notebook>			
+                    <group class="oe_subtotal_footer oe_right">
+						<label for="total"/>
+					<field name="total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" />
+				</group>
+					</form>
+			</field> 
+		</record>
+
+<!--
+			search view
+			
+-->
+        <record id="kite_debit_search" model="ir.ui.view">
+            <field name="name">kite.debit</field>
+            <field name="model">kite.debit</field>
+            <field name="arch" type="xml">
+                <search string="Debit Note">
+                    <field name="name" string="Debit No"/>
+					<group expand="0" string="Group By...">
+						<filter string="Status" context="{'group_by': 'state'}"/>
+					</group>                    
+                </search>
+            </field>
+        </record>	
+
+
+		
+		<record id="kite_debit_tree" model="ir.ui.view">
+			<field name="name">kite.debit</field>
+			<field name="model">kite.debit</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Debit Note" >
+					<field name="name"/>
+					<field name="entry_date"/>
+					<field name="customer_id"/>
+					<field name="product_id"/>
+					<field name="sale_id"/>
+					<field name="product_qty"/>
+					<field name="unit_price"/>
+					<field name="total"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kite_debit_action" model="ir.actions.act_window">
+			<field name="name">Debit Note</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kite.debit</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kite_debit_tree"/>
+		</record>
+		
+        <menuitem id="transaction_invoice_parent_menu" parent="kite_sale_order.transaction_main_menu" name="Invoice Details" sequence="4"/>
+        <menuitem id="transaction_debit_action_menu" parent="transaction_invoice_parent_menu" action="kite_debit_action" name="Debit Note" sequence="1"/>
+		
+		
+</data>
+	</openerp>

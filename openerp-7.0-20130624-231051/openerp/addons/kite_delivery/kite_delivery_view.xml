@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	<record id="kite_delivery_form" model="ir.ui.view">
+			<field name="name">kite.delivery</field>
+			<field name="model">kite.delivery</field>
+			<field name="arch" type="xml">
+				<form string="DC" version="7.0">
+				<header>
+					<button name="entry_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red"}' readonly="1"/>
+					</header>
+				<group>
+					<group>
+						<field name="name" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="customer_id" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_address" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_ref" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+					</group>
+					<group>
+						<field name="so_date" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_po" readonly='1'/>
+						<field name="cus_po_date" />
+						<field name="mode_of_delivery" />
+					</group>					
+				</group>
+					<notebook>
+						<page string="Select Pending SO">
+							<field name="so_nos" nolabel="1" context="{'tree_view_ref' : 'kite_sale_order.kite_sale_line_tree_dc'}"/>
+							 <button name="update_so" type='object' string="Proceed" states="draft"/>
+						 </page>	
+						<page string="Line Details">
+							<field name="line_ids" colspan="4" nolabel="1" attrs="{'readonly': [('state','in',['confirm'])]}">
+								<tree string="DC Line" editable="bottom">
+									<field name="product_id" />
+									<field name="unit_price" />
+									<field name="order_qty" />
+									<field name="delivery_date" />
+									<field name="cus_price" />
+								</tree> 
+								</field>
+						</page>
+						<page string="Notes">
+							<field name="remark" nolabel='1' placeholder="Put an internal note..."/>
+						</page>							
+                        <page string="Info">
+							<group>
+							<group>
+								<field name="company_id" readonly='1'/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="user_id"/>
+								</group>
+								<group>
+									<field name="crt_date"/>
+								</group>
+							</group>
+                        </page>                        
+                    </notebook>			
+ 	
+					</form>
+			</field> 
+		</record>
+
+<!--
+			search view
+			
+-->
+        <record id="kite_delivery_search" model="ir.ui.view">
+            <field name="name">kite.delivery</field>
+            <field name="model">kite.delivery</field>
+            <field name="arch" type="xml">
+                <search string="DC Form">
+                    <field name="name" string="Sale No"/>
+					<group expand="0" string="Group By...">
+						<filter string="Status" context="{'group_by': 'state'}"/>
+					</group>                    
+                </search>
+            </field>
+        </record>	
+
+
+		
+		<record id="kite_delivery_tree" model="ir.ui.view">
+			<field name="name">kite.delivery</field>
+			<field name="model">kite.delivery</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="DC" >
+					<field name="name"/>
+					<field name="customer_id"/>
+					<field name="so_date"/>
+					<field name="mode_of_delivery"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kite_delivery_action" model="ir.actions.act_window">
+			<field name="name">DC</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kite.delivery</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kite_delivery_tree"/>
+		</record>
+		
+        <menuitem id="transaction_delivery_parent" parent="kite_sale_order.transaction_main_menu" name="DC Details" sequence="2"/>
+        <menuitem id="transaction_delivery_action_menu" parent="transaction_delivery_parent" action="kite_delivery_action" name="Delivery Challan" sequence="1"/>
+		
+		
+		
+</data>
+	</openerp>

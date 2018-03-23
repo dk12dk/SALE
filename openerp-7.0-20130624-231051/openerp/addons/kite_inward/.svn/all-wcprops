@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/Ellen_Foundry/!svn/ver/160/openerp-server/openerp/addons/kg_sale_order
+END
+__openerp__.py
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/Ellen_Foundry/!svn/ver/91/openerp-server/openerp/addons/kg_sale_order/__openerp__.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/Ellen_Foundry/!svn/ver/91/openerp-server/openerp/addons/kg_sale_order/__init__.py
+END
+kg_sale_order.py
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/Ellen_Foundry/!svn/ver/160/openerp-server/openerp/addons/kg_sale_order/kg_sale_order.py
+END
+kg_sale_order_view.xml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/Ellen_Foundry/!svn/ver/160/openerp-server/openerp/addons/kg_sale_order/kg_sale_order_view.xml
+END

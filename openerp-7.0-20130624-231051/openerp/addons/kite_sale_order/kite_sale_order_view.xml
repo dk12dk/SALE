@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	<record id="kite_sale_form" model="ir.ui.view">
+			<field name="name">kite.sale.order</field>
+			<field name="model">kite.sale.order</field>
+			<field name="arch" type="xml">
+				<form string="Sale Order" version="7.0">
+				<header>
+					<button name="entry_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red"}' readonly="1"/>
+					</header>
+				<group>
+					<group>
+						<field name="name" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="customer_id" on_change="onchange_cus_id(customer_id)" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_address" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_ref" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+					</group>
+					<group>
+						<field name="so_date" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_po" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="cus_po_date" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+						<field name="mode_of_delivery" attrs="{'readonly': [('state','in',['confirm'])]}"/>
+					</group>					
+				</group>
+					<notebook>
+						<page string="Line Details">
+							<field name="line_ids" colspan="4" nolabel="1" attrs="{'readonly': [('state','in',['confirm'])]}">
+								<tree string="Order Line" editable="bottom">
+									<field name="product_id" />
+									<field name="unit_price" />
+									<field name="order_qty" />
+									<field name="delivery_date" />
+									<field name="cus_price" />
+								</tree> 
+								</field>
+						</page>
+						<page string="Notes">
+							<field name="remark" nolabel='1' placeholder="Put an internal note..."/>
+						</page>							
+                        <page string="Info">
+							<group>
+							<group>
+								<field name="company_id" readonly='1'/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="user_id"/>
+								</group>
+								<group>
+									<field name="crt_date"/>
+								</group>
+							</group>
+                        </page>                        
+                    </notebook>			
+                    <group class="oe_subtotal_footer oe_right">
+						<label for="amount_total"/>
+					<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" />
+				</group>
+ 	
+					</form>
+			</field> 
+		</record>
+
+<!--
+			search view
+			
+-->
+        <record id="kite_sale_search" model="ir.ui.view">
+            <field name="name">kite.sale.order</field>
+            <field name="model">kite.sale.order</field>
+            <field name="arch" type="xml">
+                <search string="Sale Form">
+                    <field name="name" string="Sale No"/>
+					<group expand="0" string="Group By...">
+						<filter string="Status" context="{'group_by': 'state'}"/>
+					</group>                    
+                </search>
+            </field>
+        </record>	
+
+
+		
+		<record id="kite_sale_tree" model="ir.ui.view">
+			<field name="name">kite.sale.order</field>
+			<field name="model">kite.sale.order</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Sale Order" >
+					<field name="name"/>
+					<field name="customer_id"/>
+					<field name="so_date"/>
+					<field name="mode_of_delivery"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kite_sale_action" model="ir.actions.act_window">
+			<field name="name">Sale Order</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kite.sale.order</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kite_sale_tree"/>
+		</record>
+		
+		<menuitem id="transaction_main_menu" name="Transaction" sequence="2"/>
+        <menuitem id="transaction_sale_order" parent="transaction_main_menu" name="Sales" sequence="1"/>
+        <menuitem id="transaction_sale_order_action" parent="transaction_sale_order" action="kite_sale_action" name="Sale Order" sequence="1"/>
+		
+		
+<!--
+		DC PEnding
+-->
+
+
+		<record id="kite_sale_line_tree_dc" model="ir.ui.view">
+			<field name="name">kite.sale.order</field>
+			<field name="model">kite.sale.order.line</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="DC Pending" create="false" delete="false" editable="bottom">
+					<field name="name" readonly="1"/>
+					<field name="customer_id" readonly="1"/>
+					<field name="product_id" readonly="1"/>
+					<field name="order_qty" readonly="1"/>
+					<field name="pending_qty" string="DC Pending Qty" readonly="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kite_sale_line_action_dc" model="ir.actions.act_window">
+			<field name="name">DC Pending</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kite.sale.order.line</field>
+			<field name="view_type">form</field>
+				<field name="domain">[('pending_qty','>',0)]</field>
+			<field name="view_id" ref="kite_sale_line_tree_dc"/>
+		</record>
+		
+        <menuitem id="transaction_sale_order_line_menu" parent="transaction_sale_order" action="kite_sale_line_action_dc" name="DC Pending Items" sequence="2"/>
+<!--
+	DC pending end
+-->
+		
+		
+<!--
+		INvoice PEnding
+-->
+
+
+		<record id="kite_sale_line_tree_invoice" model="ir.ui.view">
+			<field name="name">kite.sale.order</field>
+			<field name="model">kite.sale.order.line</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Invoice Pending" create="false" delete="false" editable="bottom">
+					<field name="name" readonly="1"/>
+					<field name="customer_id" readonly="1"/>
+					<field name="product_id" readonly="1"/>
+					<field name="order_qty" readonly="1"/>
+					<field name="inv_pending_qty" string="Invoice Pending Qty" readonly="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kite_sale_line_action_invoice" model="ir.actions.act_window">
+			<field name="name">Invoice Pending</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kite.sale.order.line</field>
+			<field name="view_type">form</field>
+				<field name="domain">[('inv_pending_qty','>',0)]</field>
+			<field name="view_id" ref="kite_sale_line_tree_invoice"/>
+		</record>
+		
+        <menuitem id="transaction_sale_order_line_menu_invoice" parent="transaction_sale_order" action="kite_sale_line_action_invoice" name="Invoice Pending Items" sequence=""/>
+<!--
+	DC pending end
+-->
+		
+</data>
+	</openerp>
